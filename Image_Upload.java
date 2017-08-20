@@ -11,17 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.*;
-import java.awt.Graphics;
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
-import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileSystemView;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.awt.image.BufferedImage;
 
 /**
  *
@@ -39,7 +31,7 @@ public class Image_Upload implements ActionListener {
     int imageNumber;
 
     public Image_Upload() {
-        textFile = new File("login.txt");
+        textFile = new File("login.txt"); // stores the login information
 
         JFrame frame = new JFrame("Photo_Upload");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,7 +55,7 @@ public class Image_Upload implements ActionListener {
         pass = new JTextField(10);
         panel.add(pass);
 
-        imageFile = new File("images.txt");
+        imageFile = new File("images.txt"); // stores the locations of the images
 
         panel_2 = new JPanel();
         panel_2.setOpaque(true);
@@ -81,13 +73,10 @@ public class Image_Upload implements ActionListener {
         newImageButton.addActionListener(this);
         panel_2.add(newImageButton);
 
-        ////
-        mainPanel = new JPanel(new CardLayout());
+        mainPanel = new JPanel(new CardLayout()); // creates card layout so the panels could be switched out
         mainPanel.add(panel, "Panel 1");
         mainPanel.add(panel_2, "Panel 2");
 
-//        CardLayout cl = (CardLayout) (mainPanel.getLayout());
-//        cl.show(mainPanel, "Panel 2");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
         frame.pack();
@@ -99,10 +88,10 @@ public class Image_Upload implements ActionListener {
         if (event.getActionCommand().equals("Sign Up")) {
             BufferedWriter writer = null;
             try {
-                imageFile.delete();
+                imageFile.delete(); // deletes the stored images
                 imageFile.createNewFile();
                 writer = new BufferedWriter(new FileWriter(textFile));
-                writer.write(user.getText());
+                writer.write(user.getText()); // gets the user's desired name and password
                 writer.newLine();
                 writer.write(pass.getText());
                 writer.close();
@@ -114,7 +103,7 @@ public class Image_Upload implements ActionListener {
             BufferedReader reader = null;
             try {
                 reader = new BufferedReader(new FileReader(textFile));
-                if (user.getText().equals(reader.readLine()) && pass.getText().equals(reader.readLine())) {
+                if (user.getText().equals(reader.readLine()) && pass.getText().equals(reader.readLine())) { // if login successful, open upload page
                     CardLayout cl = (CardLayout) (mainPanel.getLayout());
                     cl.show(mainPanel, "Panel 2");
                 }
@@ -127,13 +116,12 @@ public class Image_Upload implements ActionListener {
         } else if (event.getActionCommand().equals("Next Image")) {
             BufferedReader picReader = null;
             String picture;
-            //do next line stuff
             try {
-                picReader = new BufferedReader(new FileReader(imageFile));
+                picReader = new BufferedReader(new FileReader(imageFile)); 
                 imageNumber++;
-                while ((picture = picReader.readLine()) != null) {
+                while ((picture = picReader.readLine()) != null) { // sets the image as the next one in the file
                     for (int i = 0; i < imageNumber; i++) {
-                        ImageIcon img = new ImageIcon(picture);
+                        ImageIcon img = new ImageIcon(picture); 
                         Image image = img.getImage();
                         Image newimg = image.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
                         img = new ImageIcon(newimg);
@@ -151,7 +139,7 @@ public class Image_Upload implements ActionListener {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
             int returnValue = jfc.showOpenDialog(null);
-            if (event.getActionCommand().equals("New Image") && returnValue == JFileChooser.APPROVE_OPTION) {
+            if (event.getActionCommand().equals("New Image") && returnValue == JFileChooser.APPROVE_OPTION) { // chooses an image from the computer and adds it to the file
 
                 BufferedWriter picWriter;
                 File selectedFile = jfc.getSelectedFile();
